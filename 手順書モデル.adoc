@@ -1,0 +1,66 @@
+:toc: left
+:experimental:
+:sectnums:
+:icons: font
+
+= 手順書タイトル
+
+== クラスタの状態を確認する
+
+IMPORTANT: 本手順は、HCサーバにログインして実行する。
+
+下記のコマンドを実行する。
+
+....
+pcs status
+....
+
+- [*] 実行結果が表示されることを確認する。
+
+....
+Cluster name: bigbang-cluster1
+Stack: corosync
+Current DC: centos7-2 (version 1.1.19-8.el7_6.4-c3c624ea3d) - partition with quorum
+Last updated: Wed Jul  3 16:38:06 2019
+Last change: Wed Jul  3 16:33:48 2019 by root via cibadmin on centos7-1
+2 nodes configured
+3 resources configured
+Online: [ centos7-2 ]
+OFFLINE: [ centos7-1 ]
+Full list of resources:
+ Resource Group: rg01
+     VirtualIP	(ocf::heartbeat:IPaddr2):	Started centos7-2
+     ShareDir	(ocf::heartbeat:Filesystem):	Started centos7-2
+     MariaDB	(systemd:mariadb):	Started centos7-2
+Daemon Status:
+  corosync: active/disabled
+  pacemaker: active/disabled
+  pcsd: active/enabled
+....
+
+NOTE: 実行結果は本手順では確認する必要はない。
+
+WARNING: centos7-1がOFFLINEになった場合は、運用Gにエスカレーションする。
+
+== クラスタから離脱する
+
+[IMPORTANT]
+====
+* 本手順は、運用監視端末から実行する。
+* コマンド実行画面が表示されていること。
+====
+
+以下のパラメータを入力する。
+
+. menu:実行サーバ[1号機]
+. menu:セグメント[監視]
+. menu:オプション[何も設定しない]
+
+- [*] すべてのパラメータが正しく入力されていること
+
+== コマンド実行
+
+. btn:[実行]を押下する。
+. ポップアップした確認画面で、btn:[はい(Y)]を押下する。
+
+include::事後確認手順.adoc[]
