@@ -10,6 +10,8 @@ S2_TAG = "sect2 data-line-*"
 IMPORTANT_TAG = "admonitionblock important *"
 CHECKLIST_TAG = "ulist checklist data-line-*"
 
+
+
 with open('手順書モデル.html', 'r', encoding='utf-8') as html:
     soup = BeautifulSoup(html, features='html.parser')
     for s1 in soup.find_all(class_=re.compile(S1_TAG)):
@@ -56,17 +58,24 @@ def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation):
 FIRST_CELL_ROWPOSITION = 6
 cell_position = FIRST_CELL_ROWPOSITION
 
+operation_pattern_dict = {"本手順は、運用監視端末から実行する": "運用監視端末", "本手順は、HCサーバ1号機から実行する": "HCサーバ1号機"}
+
 for s1 in s1_structure:
     for k,v in s1.items():
-        # print(k, "".join(["A",str(cell_position)]))
         write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k)
         cell_position += 1
-        # print(v["IMPORTANT"], "".join(["A",str(cell_position)]))
         write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), v["IMPORTANT"])
         cell_position += 1
         for s2_operation in v["OPERATIONS"]:
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["B",str(cell_position)]), list(s2_operation.keys())[0])
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["C",str(cell_position)]), s2_operation[list(s2_operation.keys())[0]]["IMPORTANT"])
+            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["D",str(cell_position)]), "□")
+            for operation_pattern,operation_srv_name in operation_pattern_dict.items():
+                if operation_pattern in s2_operation[list(s2_operation.keys())[0]]["IMPORTANT"]:
+                    print(operation_srv_name)
+                    write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["F",str(cell_position)]), operation_srv_name)
+                    break
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["G",str(cell_position)]), s2_operation[list(s2_operation.keys())[0]]["OPERATION"])
-            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["H",str(cell_position)]), s2_operation[list(s2_operation.keys())[0]]["CHECKLIST"])
+            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["H",str(cell_position)]), " ".join(["□", s2_operation[list(s2_operation.keys())[0]]["CHECKLIST"]]))
+            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["I",str(cell_position)]), "□")
             cell_position += 1
