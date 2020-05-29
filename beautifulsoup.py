@@ -48,16 +48,17 @@ from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles import PatternFill
 
-def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation, weapTextopt=True, fill_color=None):
+def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation, weapTextopt=True, fill_line_color=None):
     wb = load_workbook(excelfilename)
     ws = wb.active
     ws.title = sheettitle
     ws[cell_num].alignment = Alignment(wrapText=weapTextopt, vertical='center')
     ws[cell_num] = operation
-    if fill_color:
+    if fill_line_color:
         for i in range(12):
-            ws["".join[chr(65+i), cell_num[1:]]].fill = PatternFill(fill_type='solid',
-                                fgColor=fill_color)
+            color_fill_cellnum = "".join([chr(65+i), cell_num[1:]])
+            ws[color_fill_cellnum].fill = PatternFill(fill_type='solid',
+                                fgColor=fill_line_color)
     wb.save(filename = excelfilename)
 
 
@@ -68,11 +69,11 @@ operation_pattern_dict = {"本手順は、運用監視端末から実行する":
 
 for s1 in s1_structure:
     for k,v in s1.items():
-        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_color="FFFF00")
+        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_line_color="FFFF00")
         cell_position += 1
-        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), v["IMPORTANT"], weapTextopt=False, fill_color="FFFFCC")
+        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), v["IMPORTANT"], weapTextopt=False, fill_line_color="FFFFCC")
         cell_position += 1
-        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_color="CCFFCC")
+        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_line_color="CCFFCC")
         cell_position += 1
         for s2_operation in v["OPERATIONS"]:
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["B",str(cell_position)]), list(s2_operation.keys())[0])
