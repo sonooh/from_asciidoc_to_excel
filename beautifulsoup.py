@@ -47,8 +47,9 @@ pprint(s2_structure)
 from openpyxl import load_workbook
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles import PatternFill
+from openpyxl.styles.fonts import Font
 
-def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation, weapTextopt=True, fill_line_color=None):
+def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation, weapTextopt=True, fill_line_color=None, fix_size=13, bold=False):
     wb = load_workbook(excelfilename)
     ws = wb.active
     ws.title = sheettitle
@@ -59,8 +60,8 @@ def write_operations_to_cell(excelfilename, sheettitle, cell_num, operation, wea
             color_fill_cellnum = "".join([chr(65+i), cell_num[1:]])
             ws[color_fill_cellnum].fill = PatternFill(fill_type='solid',
                                 fgColor=fill_line_color)
+    ws[cell_num].font = Font(size=fix_size, bold=bold)
     wb.save(filename = excelfilename)
-
 
 FIRST_CELL_ROWPOSITION = 6
 cell_position = FIRST_CELL_ROWPOSITION
@@ -69,14 +70,17 @@ operation_pattern_dict = {"本手順は、運用監視端末から実行する":
 
 for s1 in s1_structure:
     for k,v in s1.items():
-        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_line_color="FFFF00")
+        write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_line_color="FFFF00", fix_size=24, bold=True)
         cell_position += 1
         write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), v["IMPORTANT"], weapTextopt=False, fill_line_color="FFFFCC")
         cell_position += 1
         write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), k, weapTextopt=False, fill_line_color="CCFFCC")
         cell_position += 1
         for s2_operation in v["OPERATIONS"]:
-            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["B",str(cell_position)]), list(s2_operation.keys())[0])
+            # write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["B",str(cell_position)]), list(s2_operation.keys())[0])
+            operation_name = list(s2_operation.keys())[0]
+            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["A",str(cell_position)]), str(operation_name.split(" ")[:1][0]))
+            write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["B",str(cell_position)]), str(operation_name.split(" ")[1:][0]))
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["C",str(cell_position)]), s2_operation[list(s2_operation.keys())[0]]["IMPORTANT"])
             write_operations_to_cell('operation_man_format.xlsx',"詳細手順","".join(["D",str(cell_position)]), "□")
             for operation_pattern,operation_srv_name in operation_pattern_dict.items():
